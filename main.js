@@ -64,10 +64,18 @@ function loadJSONAsync(url) {
 // Browsers block audio until a user gesture.
 // We unlock it once and never think about it again.
 let audioUnlocked = false;
-function unlockAudioOnce() {
+async function unlockAudioOnce() {
   if (audioUnlocked) return;
   audioUnlocked = true;
-  if (typeof userStartAudio === "function") userStartAudio();
+
+  if (typeof userStartAudio === "function") {
+    await userStartAudio();
+  }
+
+  if (backgroundMusic && !backgroundMusic.isPlaying()) {
+    backgroundMusic.setLoop(true);
+    backgroundMusic.play();
+  }
 }
 
 // Prevent the browser from stealing keys (space/arrows) for scrolling.
@@ -79,17 +87,6 @@ function preventKeysThatScroll(evt) {
     return false;
   }
   return true;
-}
-
-let backgroundMusic;
-
-// Inside the boot() function, load the background music
-backgroundMusic = loadSound("assets/backgroundMusic.mp3");
-
-// Inside the initRuntime() function, play the music and loop it
-if (backgroundMusic) {
-  backgroundMusic.setLoop(true);
-  backgroundMusic.play();
 }
 
 // ------------------------------------------------------------
@@ -112,6 +109,8 @@ let debugOverlay; // VIEW/SYSTEM: debug UI
 let winScreen;
 let loseScreen;
 let parallaxLayers = []; // Preloaded parallax layer defs [{ img, factor }, ...]
+
+let backgroundMusic;
 
 // Make URLs absolute so they can’t accidentally resolve relative to /src/...
 const LEVELS_URL = new URL("./data/levels.json", window.location.href).href;
@@ -139,6 +138,9 @@ async function boot() {
 
   // --- Assets (images/animations/etc.) ---
   assets = await loadAssets(levelPkg, tuningDoc);
+
+  // loads background music
+  backgroundMusic = loadSound("assets/sfx/backgroundMusic.mp3");
 
   // --- Audio registry ---
   // (AudioContext may still be locked until the user clicks/presses a key.)
