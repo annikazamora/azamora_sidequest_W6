@@ -106,7 +106,7 @@ export class PlayerEntity {
   // build / reset
   // -----------------------
   buildSprites() {
-    const { frameW = 100, frameH = 100 } = this.tilesCfg;
+    const { frameW = 32, frameH = 32 } = this.tilesCfg;
 
     this.sprite = new Sprite(this.startX, this.startY, frameW, frameH);
     this.sprite.rotationLock = true;
