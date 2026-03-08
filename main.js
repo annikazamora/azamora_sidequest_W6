@@ -37,7 +37,10 @@ import { LevelLoader } from "./src/LevelLoader.js";
 import { Game } from "./src/Game.js";
 import { ParallaxBackground } from "./src/ParallaxBackground.js";
 import { loadAssets } from "./src/AssetLoader.js";
-import { applyIntegerScale, installResizeHandler } from "./src/utils/IntegerScale.js";
+import {
+  applyIntegerScale,
+  installResizeHandler,
+} from "./src/utils/IntegerScale.js";
 
 import { CameraController } from "./src/CameraController.js";
 import { InputManager } from "./src/InputManager.js";
@@ -76,6 +79,17 @@ function preventKeysThatScroll(evt) {
     return false;
   }
   return true;
+}
+
+let backgroundMusic;
+
+// Inside the boot() function, load the background music
+backgroundMusic = loadSound("assets/backgroundMusic.mp3");
+
+// Inside the initRuntime() function, play the music and loop it
+if (backgroundMusic) {
+  backgroundMusic.setLoop(true);
+  backgroundMusic.play();
 }
 
 // ------------------------------------------------------------
@@ -208,7 +222,6 @@ function initRuntime() {
 
   // VIEW: parallax background renderer
   parallax = new ParallaxBackground(parallaxLayers);
-
   loop();
 }
 
