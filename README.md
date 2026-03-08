@@ -18,8 +18,9 @@ Modified example 5 from LEARN week 6 into a farm themed game. Player (cow) colle
 
 ## Learning Goals
 
-- input and change image/sprite files (player, background, floor tiles, etc.)
-- add sound effects based on certain user input (ex, when player collects bell)
+- Input and change image/sprite files (player, background, floor tiles, etc.)
+- Add background music
+- Add sound based on certain user input (ex, when player collects bell)
 
 ---
 
