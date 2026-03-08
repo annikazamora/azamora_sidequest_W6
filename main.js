@@ -119,7 +119,6 @@ let parallaxLayers = []; // Preloaded parallax layer defs [{ img, factor }, ...]
 
 //sounds/music
 let backgroundMusic;
-let jumpSound;
 
 // Make URLs absolute so they can’t accidentally resolve relative to /src/...
 const LEVELS_URL = new URL("./data/levels.json", window.location.href).href;
@@ -152,15 +151,6 @@ async function boot() {
   backgroundMusic = await new Promise((resolve, reject) => {
     loadSound(
       "assets/sfx/backgroundMusic.mp3",
-      (snd) => resolve(snd),
-      (err) => reject(err),
-    );
-  });
-
-  // loads jump sound
-  jumpSound = await new Promise((resolve, reject) => {
-    loadSound(
-      "assets/sfx/jump.mp3",
       (snd) => resolve(snd),
       (err) => reject(err),
     );
@@ -229,7 +219,6 @@ function initRuntime() {
     inputManager,
     soundManager,
     debugOverlay,
-    jumpSound,
   });
   game.build();
 

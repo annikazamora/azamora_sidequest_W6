@@ -14,7 +14,6 @@ export class PlayerController {
   constructor(playerEntity, opts = {}) {
     this.player = playerEntity;
     this.events = opts.events || null;
-    this.jumpSound = opts.jumpSound || null;
   }
 
   // handy passthrough for old code that expects playerCtrl.sprite
@@ -77,21 +76,6 @@ export class PlayerController {
     const wantJump = input?.jumpPressed;
     if (p.knockTimer === 0 && !p.pendingDeath && grounded && wantJump) {
       p.jump();
-
-      console.log("jump sound object:", this.jumpSound);
-      console.log("jump sound loaded:", this.jumpSound?.isLoaded?.());
-      const ctx =
-        typeof getAudioContext === "function" ? getAudioContext() : null;
-      console.log("audio state:", ctx?.state);
-
-      if (
-        this.jumpSound &&
-        this.jumpSound.isLoaded?.() &&
-        getAudioContext?.()?.state === "running"
-      ) {
-        this.jumpSound.play();
-      }
-
       this.events?.emit("player:jumped", {});
     }
 

@@ -26,7 +26,6 @@ export class Game {
     this.pkg = levelPkg;
     this.assets = assets;
     this.hudGfx = opts.hudGfx || null;
-    this.jumpSound = opts.jumpSound || null;
 
     // core systems
     this.events = new EventBus();
@@ -72,7 +71,6 @@ export class Game {
     this.level = new Level(this.pkg, this.assets, {
       hudGfx: this.hudGfx,
       events: this.events,
-      jumpSound: this.jumpSound,
     });
     this.level.build();
 
