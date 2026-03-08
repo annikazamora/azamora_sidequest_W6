@@ -27,8 +27,8 @@ export async function loadAssets(levelPkg, tuningDoc) {
 
   const groundTileImg = await loadImageAsync("assets/groundTile.png");
   const groundTileDeepImg = await loadImageAsync("assets/groundTileDeep.png");
-  const platformLCImg = await loadImageAsync("assets/platformLC.png");
-  const platformRCImg = await loadImageAsync("assets/platformRC.png");
+  const platformLCImg = await loadImageAsync("assets/groundTile.png");
+  const platformRCImg = await loadImageAsync("assets/groundTile.png");
   const wallLImg = await loadImageAsync("assets/wallL.png");
   const wallRImg = await loadImageAsync("assets/wallR.png");
 
