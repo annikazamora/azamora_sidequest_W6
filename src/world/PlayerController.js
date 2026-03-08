@@ -14,6 +14,7 @@ export class PlayerController {
   constructor(playerEntity, opts = {}) {
     this.player = playerEntity;
     this.events = opts.events || null;
+    this.jumpSound = opts.jumpSound || null;
   }
 
   // handy passthrough for old code that expects playerCtrl.sprite
@@ -41,7 +42,10 @@ export class PlayerController {
     if (!p.dead && p.pendingDeath && grounded) {
       p.dead = true;
       p.pendingDeath = false;
-      this.events?.emit("player:died", { health: p.health, maxHealth: p.maxHealth });
+      this.events?.emit("player:died", {
+        health: p.health,
+        maxHealth: p.maxHealth,
+      });
     }
 
     // if dead or won, freeze horizontal control and just animate
@@ -56,7 +60,13 @@ export class PlayerController {
     // ATTACK start
     // -----------------------
     const wantAttack = input?.attackPressed;
-    if (p.knockTimer === 0 && !p.pendingDeath && grounded && !p.attacking && wantAttack) {
+    if (
+      p.knockTimer === 0 &&
+      !p.pendingDeath &&
+      grounded &&
+      !p.attacking &&
+      wantAttack
+    ) {
       p.startAttack();
       this.events?.emit("player:attacked", {});
     }
@@ -67,6 +77,21 @@ export class PlayerController {
     const wantJump = input?.jumpPressed;
     if (p.knockTimer === 0 && !p.pendingDeath && grounded && wantJump) {
       p.jump();
+
+      console.log("jump sound object:", this.jumpSound);
+      console.log("jump sound loaded:", this.jumpSound?.isLoaded?.());
+      const ctx =
+        typeof getAudioContext === "function" ? getAudioContext() : null;
+      console.log("audio state:", ctx?.state);
+
+      if (
+        this.jumpSound &&
+        this.jumpSound.isLoaded?.() &&
+        getAudioContext?.()?.state === "running"
+      ) {
+        this.jumpSound.play();
+      }
+
       this.events?.emit("player:jumped", {});
     }
 

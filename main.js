@@ -64,17 +64,24 @@ function loadJSONAsync(url) {
 // Browsers block audio until a user gesture.
 // We unlock it once and never think about it again.
 let audioUnlocked = false;
+
 async function unlockAudioOnce() {
   if (audioUnlocked) return;
-  audioUnlocked = true;
 
   if (typeof userStartAudio === "function") {
     await userStartAudio();
   }
 
-  if (backgroundMusic && !backgroundMusic.isPlaying()) {
-    backgroundMusic.setLoop(true);
-    backgroundMusic.play();
+  const ctx = getAudioContext?.();
+  console.log("audio context state:", ctx?.state);
+
+  audioUnlocked = ctx?.state === "running";
+
+  if (audioUnlocked && backgroundMusic && backgroundMusic.isLoaded()) {
+    if (!backgroundMusic.isPlaying()) {
+      backgroundMusic.setLoop(true);
+      backgroundMusic.play();
+    }
   }
 }
 
@@ -110,7 +117,9 @@ let winScreen;
 let loseScreen;
 let parallaxLayers = []; // Preloaded parallax layer defs [{ img, factor }, ...]
 
+//sounds/music
 let backgroundMusic;
+let jumpSound;
 
 // Make URLs absolute so they can’t accidentally resolve relative to /src/...
 const LEVELS_URL = new URL("./data/levels.json", window.location.href).href;
@@ -140,7 +149,22 @@ async function boot() {
   assets = await loadAssets(levelPkg, tuningDoc);
 
   // loads background music
-  backgroundMusic = loadSound("assets/sfx/backgroundMusic.mp3");
+  backgroundMusic = await new Promise((resolve, reject) => {
+    loadSound(
+      "assets/sfx/backgroundMusic.mp3",
+      (snd) => resolve(snd),
+      (err) => reject(err),
+    );
+  });
+
+  // loads jump sound
+  jumpSound = await new Promise((resolve, reject) => {
+    loadSound(
+      "assets/sfx/jump.mp3",
+      (snd) => resolve(snd),
+      (err) => reject(err),
+    );
+  });
 
   // --- Audio registry ---
   // (AudioContext may still be locked until the user clicks/presses a key.)
@@ -205,6 +229,7 @@ function initRuntime() {
     inputManager,
     soundManager,
     debugOverlay,
+    jumpSound,
   });
   game.build();
 
@@ -330,6 +355,14 @@ window.addEventListener(
     }
   },
   { passive: false },
+);
+
+window.addEventListener(
+  "pointerdown",
+  () => {
+    unlockAudioOnce();
+  },
+  { passive: true },
 );
 
 // ------------------------------------------------------------
